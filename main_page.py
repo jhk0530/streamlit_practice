@@ -1,7 +1,11 @@
 import json
 import requests
+import streamlit as st
 
-headers = {'Authorization': 'Bearer ${{secrets.TOKEN}}'}
+secrets = st.secrets['TOKEN']
+
+token = 'token ' + secrets
+headers = {'Authorization': token}
 
 s = requests.get('https://api.github.com/repos/statgarten/door', headers = headers).json()
 
@@ -38,7 +42,7 @@ closeissue = allissue - openissue
 active = openissue +  (closeissue) * 2
 
 
-import streamlit as st
+
 
 st.markdown("# Statgarten: door Metrics 🎈")
 # st.sidebar.markdown("# Main page 🎈") # no need to sidebar
