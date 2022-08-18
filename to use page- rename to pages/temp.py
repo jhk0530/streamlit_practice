@@ -1,3 +1,5 @@
+# to use this: rename to page_2.py
+
 import streamlit as st
 
 st.markdown("# Page 2 ❄️")
