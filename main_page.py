@@ -4,6 +4,7 @@ import requests
 import streamlit as st
 import pandas as pd
 
+
 headers = {'Authorization': 'token ' + st.secrets['TOKEN']}
 
 @st.cache(ttl = 3600*12) 
@@ -55,22 +56,22 @@ def buildMetrics(metrics):
     col1, col2, col3, col4, col5, col6 = st.columns(6)
 
     with col1:
-        st.metric(label = '커밋', value = str(metrics['Commits']), delta = str(metrics[0]-300))
+        st.metric(label = '🛠️ 커밋', value = int(metrics['Commits']), delta = int(metrics[0])-300)
 
     with col2:
-        st.metric(label = '기여자', value = str(metrics['Contributors']), delta = str(metrics[1]-10))
+        st.metric(label = '🧑‍🤝‍🧑 기여자', value = int(metrics['Contributors']), delta = int(metrics[1])-10)
 
     with col3:
-        st.metric(label = '스타', value = str(metrics['Stars']), delta = str(metrics[2]-50))
+        st.metric(label = '⭐ 스타', value = int(metrics['Stars']), delta = int(metrics[2])-50)
 
     with col4:
-        st.metric(label = '커뮤니티 활성도', value = str(metrics['Active Score']), delta = str(metrics[3]-120))
+        st.metric(label = '💯 커뮤니티 활성도', value = int(metrics['Active Score']), delta = int(metrics[3])-120)
 
     with col5:
-        st.metric(label = '오픈 이슈', value = str(metrics['Opened Issue']))
+        st.metric(label = '❗ 오픈 이슈', value = int(metrics['Opened Issue']))
 
     with col6:
-        st.metric(label = '클로즈 이슈', value = str(metrics['Closed Issue']))
+        st.metric(label = '✅ 클로즈 이슈', value = int(metrics['Closed Issue']))
 
 df = pd.concat([
     getStats('door'), 
@@ -91,4 +92,4 @@ st.markdown("### Statgarten: Total Metrics")
 buildMetrics(Metrics)
 
 st.markdown("### Metrics for each repo")
-st.dataframe(df)
+st.table(df)
