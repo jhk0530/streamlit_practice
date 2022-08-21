@@ -1,67 +1,94 @@
+from distutils.command.build import build
 import json
 import requests
 import streamlit as st
+import pandas as pd
 
-secrets = st.secrets['TOKEN']
+headers = {'Authorization': 'token ' + st.secrets['TOKEN']}
 
-token = 'token ' + secrets
-headers = {'Authorization': token}
+@st.cache(ttl = 3600*12) 
+def getStats(repo, headers = headers):    
+    # define base url
+    url = 'https://api.github.com/repos/statgarten/' + repo    
+    # star
+    s = requests.get(url, headers = headers).json()     
+    star = s['stargazers_count']
 
-s = requests.get('https://api.github.com/repos/statgarten/door', headers = headers).json()
+    # commits
 
-star = s['stargazers_count']
+    i = 1
+    commits = 0
+    while True:                
+        s = requests.get(url + '/commits?per_page=30&page=' + str(i), headers = headers).json()
+        commits += len(s)
+        i += 1
+        if len(s) == 0: break
 
-i = 1
-commits = 0
-while True:
-    url = 'https://api.github.com/repos/statgarten/door/commits?per_page=30&page=' + str(i)
-    s = requests.get(url, headers = headers).json()
-    commits += len(s)
-    i += 1
-    if len(s) == 0: break
+    # contributors
+    s = requests.get(url + '/contributors', headers = headers).json()
+    contributors = len(s)
 
-s = requests.get('https://api.github.com/repos/statgarten/door/contributors', headers = headers).json()
+    # all issue
+    s = requests.get(url + '/issues?state=all', headers = headers).json()
+    allissue = len(s)
 
-contributors = len(s)
+    # pull requests
+    s = requests.get(url + '/pulls?state=closed', headers = headers).json()
+    pr = len(s)
+    allissue = allissue - pr
 
-# all issue
-s = requests.get('https://api.github.com/repos/statgarten/door/issues?state=all', headers = headers).json()
-allissue = len(s)
+    # open issue
+    s = requests.get(url + '/issues?state=open', headers = headers).json()
+    openissue = len(s)
 
-# pull requests
-s = requests.get('https://api.github.com/repos/statgarten/door/pulls?state=closed', headers = headers).json()
-pr = len(s)
-allissue = allissue - pr
+    closeissue = allissue - openissue
 
-# open issue
-s = requests.get('https://api.github.com/repos/statgarten/door/issues?state=open', headers = headers).json()
-openissue = len(s)
-
-closeissue = allissue - openissue
-
-active = openissue +  (closeissue) * 2
+    active = openissue +  (closeissue) * 2
+    df = pd.DataFrame(
+        data = [[repo, commits, contributors, star, active, openissue, closeissue]], 
+        columns = ["Repo",'Commits', 'Contributors', 'Stars', 'Active Score', 'Opened Issue', 'Closed Issue']
+    )
+    return(df)
 
 
+def buildMetrics(metrics):         
+    col1, col2, col3, col4, col5, col6 = st.columns(6)
 
+    with col1:
+        st.metric(label = '커밋', value = str(metrics['Commits']), delta = str(metrics[0]-300))
 
-st.markdown("# Statgarten: door Metrics 🎈")
-# st.sidebar.markdown("# Main page 🎈") # no need to sidebar
-col1, col2, col3, col4, col5, col6 = st.columns(6)
+    with col2:
+        st.metric(label = '기여자', value = str(metrics['Contributors']), delta = str(metrics[1]-10))
 
-with col1:
-    st.metric(label = '커밋', value = commits, delta = commits-300)
+    with col3:
+        st.metric(label = '스타', value = str(metrics['Stars']), delta = str(metrics[2]-50))
 
-with col2:
-    st.metric(label = '기여자', value = contributors, delta = contributors-10)
+    with col4:
+        st.metric(label = '커뮤니티 활성도', value = str(metrics['Active Score']), delta = str(metrics[3]-120))
 
-with col3:
-    st.metric(label = '스타', value = star, delta = star-50)
+    with col5:
+        st.metric(label = '오픈 이슈', value = str(metrics['Opened Issue']))
 
-with col4:
-    st.metric(label = '커뮤니티 활성도', value = active, delta = active-120)
+    with col6:
+        st.metric(label = '클로즈 이슈', value = str(metrics['Closed Issue']))
 
-with col5:
-    st.metric(label = '오픈 이슈', value = openissue)
+df = pd.concat([
+    getStats('door'), 
+    getStats('datatoys'),
+    getStats('dockerImage'),
+    getStats('goophi'),
+    getStats('exRep'),
+    getStats('scissor'),
+    getStats('plotGen'),
+    getStats('board'),
+    getStats('SGDS')
+])
 
-with col6:
-    st.metric(label = '클로즈 이슈', value = closeissue)
+df = df.set_index('Repo')
+
+Metrics = df.sum()
+st.markdown("### Statgarten: Total Metrics")
+buildMetrics(Metrics)
+
+st.markdown("### Metrics for each repo")
+st.dataframe(df)
