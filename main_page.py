@@ -93,7 +93,8 @@ df = pd.concat([
     getStats('door'), 
     getStats('datatoys'),
     getStats('dockerImage'),
-    getStats('goophi'),
+#    getStats('goophi'), # changed repository name.
+    getStats('stove'),
     getStats('exRep'),
     getStats('scissor'),
     getStats('plotGen'),
