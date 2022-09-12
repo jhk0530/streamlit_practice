@@ -7,7 +7,7 @@ import pandas as pd
 
 headers = {'Authorization': 'token ' + st.secrets['TOKEN']}
 
-@st.cache(ttl = 3600*12) 
+@st.cache(ttl = 3600*2) # if updated before 1 hour, not update again
 def getStats(repo, headers = headers):    
     # define base url
     url = 'https://api.github.com/repos/statgarten/' + repo    
@@ -30,8 +30,16 @@ def getStats(repo, headers = headers):
     contributors = len(s)
 
     # all issue
-    s = requests.get(url + '/issues?state=all', headers = headers).json()
-    allissue = len(s)
+    # s = requests.get(url + '/issues?state=all', headers = headers).json()
+    
+    # fix; 30 per page
+    i = 1
+    allissue = 0
+    while True:                
+        s = requests.get(url + '/issues?state=all&page=' + str(i), headers = headers).json()
+        allissue += len(s)
+        i += 1
+        if len(s) == 0: break    
 
     # pull requests
     s = requests.get(url + '/pulls?state=closed', headers = headers).json()
@@ -39,9 +47,17 @@ def getStats(repo, headers = headers):
     allissue = allissue - pr
 
     # open issue
-    s = requests.get(url + '/issues?state=open', headers = headers).json()
-    openissue = len(s)
 
+    # s = requests.get(url + '/issues?state=open', headers = headers).json()
+
+    i = 1
+    openissue = 0
+    while True:                
+        s = requests.get(url + '/issues?state=open&page=' + str(i), headers = headers).json()
+        openissue += len(s)
+        i += 1
+        if len(s) == 0: break    
+    
     closeissue = allissue - openissue
 
     active = openissue +  (closeissue) * 2
