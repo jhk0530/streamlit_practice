@@ -90,16 +90,16 @@ def buildMetrics(metrics):
         st.metric(label = '✅ 클로즈 이슈', value = int(metrics['Closed Issue']))
 
 df = pd.concat([
-    getStats('door'), 
+    getStats('board'),
+    getStats('crayon'),
     getStats('datatoys'),
     getStats('dockerImage'),
-#    getStats('goophi'), # changed repository name.
-    getStats('stove'),
-    getStats('exRep'),
+    getStats('door'),         
+    getStats('exRep'),    
     getStats('scissor'),
-    getStats('plotGen'),
-    getStats('board'),
-    getStats('SGDS')
+    getStats('SGDS'),
+    getStats('statgarten'),
+    getStats('stove')               
 ])
 
 df = df.set_index('Repo')
