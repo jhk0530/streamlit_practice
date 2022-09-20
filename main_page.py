@@ -98,6 +98,7 @@ df = pd.concat([
     getStats('exRep'),    
     getStats('scissor'),
     getStats('SGDS'),
+    getStats('soroban'),
     getStats('statgarten'),
     getStats('stove')               
 ])
