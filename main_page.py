@@ -91,7 +91,7 @@ def buildMetrics(metrics):
 
 df = pd.concat([
     getStats('board'),
-    getStats('crayon'),
+    getStats('colorpen'),
     getStats('datatoys'),
     getStats('dockerImage'),
     getStats('door'),         
