@@ -10,16 +10,16 @@ headers = {'Authorization': 'token ' + st.secrets['TOKEN']}
 @st.cache(ttl = 3600*2) # if updated before 1 hour, not update again
 def getStats(repo, headers = headers):    
     # define base url
-    url = 'https://api.github.com/repos/statgarten/' + repo    
+    url = 'https://api.github.com/repos/statgarten/' + repo
     # star
-    s = requests.get(url, headers = headers).json()     
+    s = requests.get(url, headers = headers).json()
     star = s['stargazers_count']
 
     # commits
 
     i = 1
     commits = 0
-    while True:                
+    while True:
         s = requests.get(url + '/commits?per_page=30&page=' + str(i), headers = headers).json()
         commits += len(s)
         i += 1
@@ -35,11 +35,11 @@ def getStats(repo, headers = headers):
     # fix; 30 per page
     i = 1
     allissue = 0
-    while True:                
+    while True:
         s = requests.get(url + '/issues?state=all&page=' + str(i), headers = headers).json()
         allissue += len(s)
         i += 1
-        if len(s) == 0: break    
+        if len(s) == 0: break
 
     # pull requests
     s = requests.get(url + '/pulls?state=closed', headers = headers).json()
@@ -52,7 +52,7 @@ def getStats(repo, headers = headers):
 
     i = 1
     openissue = 0
-    while True:                
+    while True:
         s = requests.get(url + '/issues?state=open&page=' + str(i), headers = headers).json()
         openissue += len(s)
         i += 1
@@ -68,7 +68,7 @@ def getStats(repo, headers = headers):
     return(df)
 
 
-def buildMetrics(metrics):         
+def buildMetrics(metrics):
     col1, col2, col3, col4, col5, col6 = st.columns(6)
 
     with col1:
@@ -93,14 +93,16 @@ df = pd.concat([
     getStats('board'),
     getStats('colorpen'),
     getStats('datatoys'),
+    getStats('datatoys-python'),
     getStats('dockerImage'),
-    getStats('door'),         
-    getStats('exRep'),    
+    getStats('door'),
+    getStats('exRep'),
+    getStats('maps'),
     getStats('scissor'),
     getStats('SGDS'),
     getStats('soroban'),
     getStats('statgarten'),
-    getStats('stove')               
+    getStats('stove')
 ])
 
 df = df.set_index('Repo')
