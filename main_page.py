@@ -98,6 +98,8 @@ df = pd.concat([
     getStats('door'),
     getStats('exRep'),
     getStats('maps'),
+    getStats('playdoh'),
+    getStats('publicdata101'),
     getStats('scissor'),
     getStats('SGDS'),
     getStats('soroban'),
