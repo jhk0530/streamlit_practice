@@ -72,16 +72,16 @@ def buildMetrics(metrics):
     col1, col2, col3, col4, col5, col6 = st.columns(6)
 
     with col1:
-        st.metric(label = '🛠️ 커밋', value = int(metrics['Commits']), delta = int(metrics[0])-300)
+        st.metric(label = '🛠️ 커밋', value = int(metrics['Commits']), delta = int(metrics[0])-1000) # 커밋 1000
 
     with col2:
-        st.metric(label = '🧑‍🤝‍🧑 기여자', value = int(metrics['Contributors']), delta = int(metrics[1])-10)
+        st.metric(label = '🧑‍🤝‍🧑 기여자', value = int(metrics['Contributors']), delta = int(metrics[1])-30) # 기여자 30
 
     with col3:
-        st.metric(label = '⭐ 스타', value = int(metrics['Stars']), delta = int(metrics[2])-50)
+        st.metric(label = '⭐ 스타', value = int(metrics['Stars']), delta = int(metrics[2])-200) # 스타 200
 
     with col4:
-        st.metric(label = '💯 커뮤니티 활성도', value = int(metrics['Active Score']), delta = int(metrics[3])-120)
+        st.metric(label = '💯 커뮤니티 활성도', value = int(metrics['Active Score']), delta = int(metrics[3])-360) # 활성도 360 
 
     with col5:
         st.metric(label = '❗ 오픈 이슈', value = int(metrics['Opened Issue']))
