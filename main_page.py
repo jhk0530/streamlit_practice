@@ -8,9 +8,9 @@ import pandas as pd
 headers = {'Authorization': 'token ' + st.secrets['TOKEN']}
 
 @st.cache(ttl = 3600*2) # if updated before 1 hour, not update again
-def getStats(repo, headers = headers):    
+def getStats(repo, org = 'statgarten', headers = headers):    
     # define base url
-    url = 'https://api.github.com/repos/statgarten/' + repo
+    url = 'https://api.github.com/repos/'+ org + '/' + repo
     # star
     s = requests.get(url, headers = headers).json()
     star = s['stargazers_count']
@@ -90,21 +90,31 @@ def buildMetrics(metrics):
         st.metric(label = '✅ 클로즈 이슈', value = int(metrics['Closed Issue']))
 
 df = pd.concat([
-    getStats('board'),
-    getStats('colorpen'),
-    getStats('datatoys'),
-    getStats('datatoys-python'),
-    getStats('dockerImage'),
-    getStats('door'),
-    getStats('exRep'),
-    getStats('maps'),
-    getStats('playdoh'),
-    getStats('publicdata101'),
-    getStats('scissor'),
-    getStats('SGDS'),
-    getStats('soroban'),
-    getStats('statgarten'),
-    getStats('stove')
+    getStats('board', org = 'statgarten'),
+    getStats('colorpen', org = 'statgarten'),
+    getStats('datatoys', org = 'statgarten'),
+    getStats('datatoys-python', org = 'statgarten'),
+    getStats('datatoys-raw', org = 'statgarten'),
+    getStats('dockerImage', org = 'statgarten'),
+    getStats('door', org = 'statgarten'),
+    # getStats('exRep', org = 'statgarten'),
+    getStats('maps', org = 'statgarten'),
+    getStats('playdoh', org = 'statgarten'),
+    getStats('publicdata101', org = 'statgarten'),
+    getStats('scissor', org = 'statgarten'),
+    getStats('SGDS', org = 'statgarten'),
+    getStats('sgthemes', org = 'statgarten'),
+    getStats('soroban', org = 'statgarten'),
+    getStats('statgarten', org = 'statgarten'),
+    getStats('stove', org = 'statgarten'),
+    getStats('jstable', org = 'jinseob2kim'),
+    getStats('jskm', org = 'jinseob2kim'),
+    getStats('jsmodule', org = 'jinseob2kim'),
+    getStats('shiny.likert', org = 'zarathucorp'),        
+    # kindergarten
+    # statgarten.github.io
+    # dispatch_test
+    # CLATest    
 ])
 
 df = df.set_index('Repo')
