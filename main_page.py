@@ -71,7 +71,7 @@ def get_contributors(owner, repo):
     endpoint = f"{github_api_url}/repos/{owner}/{repo}/contributors"
     
     try:
-        response = requests.get(endpoint)
+        response = requests.get(endpoint, headers = headers)
         response.raise_for_status()  # HTTP 오류가 발생하면 예외를 발생시킵니다.
         contributors = response.json()
         logins = [contributor["login"] for contributor in contributors]  # 'login' 필드만 추출
