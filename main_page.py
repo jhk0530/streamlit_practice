@@ -66,7 +66,7 @@ def getStats(repo, org = 'statgarten', headers = headers):
     )
     return(df)
 
-def get_contributors_logins(owner, repo):
+def get_contributors(owner, repo):
     github_api_url = "https://api.github.com"
     endpoint = f"{github_api_url}/repos/{owner}/{repo}/contributors"
     
