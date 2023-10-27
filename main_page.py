@@ -66,7 +66,7 @@ def getStats(repo, org = 'statgarten', headers = headers):
     )
     return(df)
 
-def get_contributors(owner, repo):
+def get_contributors(owner, repo, headers):
     github_api_url = "https://api.github.com"
     endpoint = f"{github_api_url}/repos/{owner}/{repo}/contributors"
     
@@ -80,11 +80,9 @@ def get_contributors(owner, repo):
         print(f"Failed to retrieve contributors' logins: {e}")
         return []
 
-def find_contributors(v, owner, repo):
-    data = get_contributors(owner, repo)
-    logins = [item['login'] for item in data]
-
-    v = v + logins
+def find_contributors(v, owner, repo, headers):
+    data = get_contributors(owner, repo, headers)    
+    v = v + data
     return(v)
 
 def buildMetrics(metrics, i):
@@ -144,26 +142,26 @@ st.markdown("### Statgarten: Total Metrics")
 
 # contributors 
 v = []
-v = find_contributors(v, 'statgarten', 'board')
-v = find_contributors(v, 'statgarten', 'colorpen')
-v = find_contributors(v, 'statgarten', 'datatoys')
-v = find_contributors(v, 'statgarten', 'datatoys-python')
-v = find_contributors(v, 'statgarten', 'datatoys-raw')
-v = find_contributors(v, 'statgarten', 'dockerImage')
-v = find_contributors(v, 'statgarten', 'door')
-v = find_contributors(v, 'statgarten', 'maps')
-v = find_contributors(v, 'statgarten', 'playdoh')
-v = find_contributors(v, 'statgarten', 'publicdata101')
-v = find_contributors(v, 'statgarten', 'scissor')
-v = find_contributors(v, 'statgarten', 'SGDS')
-v = find_contributors(v, 'statgarten', 'sgthemes')
-v = find_contributors(v, 'statgarten', 'soroban')
-v = find_contributors(v, 'statgarten', 'statgarten')
-v = find_contributors(v, 'statgarten', 'stove')
-v = find_contributors(v, 'jinseob2kim', 'jstable')
-v = find_contributors(v, 'jinseob2kim', 'jskm')
-v = find_contributors(v, 'jinseob2kim', 'jsmodule')
-v = find_contributors(v, 'zarathucorp', 'shiny.likert')
+v = find_contributors(v, 'statgarten', 'board', headers = headers)
+v = find_contributors(v, 'statgarten', 'colorpen', headers = headers)
+v = find_contributors(v, 'statgarten', 'datatoys', headers = headers)
+v = find_contributors(v, 'statgarten', 'datatoys-python', headers = headers)
+v = find_contributors(v, 'statgarten', 'datatoys-raw', headers = headers)
+v = find_contributors(v, 'statgarten', 'dockerImage', headers = headers)
+v = find_contributors(v, 'statgarten', 'door', headers = headers)
+v = find_contributors(v, 'statgarten', 'maps', headers = headers)
+v = find_contributors(v, 'statgarten', 'playdoh', headers = headers)
+v = find_contributors(v, 'statgarten', 'publicdata101', headers = headers)
+v = find_contributors(v, 'statgarten', 'scissor', headers = headers)
+v = find_contributors(v, 'statgarten', 'SGDS', headers = headers)
+v = find_contributors(v, 'statgarten', 'sgthemes', headers = headers)
+v = find_contributors(v, 'statgarten', 'soroban', headers = headers)
+v = find_contributors(v, 'statgarten', 'statgarten', headers = headers)
+v = find_contributors(v, 'statgarten', 'stove', headers = headers)
+v = find_contributors(v, 'jinseob2kim', 'jstable', headers = headers)
+v = find_contributors(v, 'jinseob2kim', 'jskm', headers = headers)
+v = find_contributors(v, 'jinseob2kim', 'jsmodule', headers = headers)
+v = find_contributors(v, 'zarathucorp', 'shiny.likert', headers = headers)
 
 # unique
 v = list(set(v))
