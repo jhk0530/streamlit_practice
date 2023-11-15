@@ -66,12 +66,18 @@ def getStats(repo, org = 'statgarten', headers = headers):
     )
     return(df)
 
+import requests
+import pandas as pd
+
 def get_stats(repo, org='statgarten', headers=headers, per_page=30, max_pages=10):
     # define base url
     url = f'https://api.github.com/repos/{org}/{repo}'
 
     # star
     star = requests.get(url, headers=headers).json()['stargazers_count']
+
+    # watchers
+    watchers = requests.get(url, headers=headers).json()['subscribers_count']
 
     # commits
     commits = sum(len(requests.get(f'{url}/commits?per_page={per_page}&page={i}', headers=headers).json()) for i in range(1, max_pages + 1))
@@ -99,9 +105,14 @@ def get_stats(repo, org='statgarten', headers=headers, per_page=30, max_pages=10
     active = open_issue + close_issue * 2
 
     return pd.DataFrame(
-        data=[[repo, commits, contributors, star, active, open_issue, close_issue, pr, releases, forks]],
-        columns=["Repo", 'Commits', 'Contributors', 'Stars', 'Active Score', 'Opened Issue', 'Closed Issue', 'Pull Requests', 'Releases', 'Forks']
+        data=[[repo, commits, contributors, star, watchers, active, open_issue, close_issue, pr, releases, forks]],
+        columns=["Repo", 'Commits', 'Contributors', 'Stars', 'Watchers', 'Active Score', 'Opened Issue', 'Closed Issue', 'Pull Requests', 'Releases', 'Forks']
     )
+
+# 사용 예시
+repo_stats = get_stats("your_repo_name")
+print(repo_stats)
+
     
 def get_contributors(owner, repo, headers):
     github_api_url = "https://api.github.com"
@@ -131,6 +142,7 @@ def buildMetrics(metrics, i):
 
     with col2:        
         st.metric(label = '🧑‍🤝‍🧑 기여자', value = i, delta = i-30) # 기여자 30
+        st.metric(label = '👀 와쳐', value = int(metrics['Watchers']))
 
     with col3:
         st.metric(label = '⭐ 스타', value = int(metrics['Stars']), delta = int(metrics[2])-200) # 스타 200
