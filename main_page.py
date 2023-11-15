@@ -83,7 +83,7 @@ def get_stats(repo, org='statgarten', headers=headers, per_page=30, max_pages=10
     all_issues = sum(len(requests.get(f'{url}/issues?state=all&page={i}', headers=headers).json()) for i in range(1, max_pages + 1))
 
     # pull requests
-    pr = len(requests.get(f'{url}/pulls?state=all', headers=headers).json())
+    pr = int(len(requests.get(f'{url}/pulls?state=all', headers=headers).json()))
 
     # open issue
     open_issue = sum(len(requests.get(f'{url}/issues?state=open&page={i}', headers=headers).json()) for i in range(1, max_pages + 1))
@@ -91,10 +91,10 @@ def get_stats(repo, org='statgarten', headers=headers, per_page=30, max_pages=10
     close_issue = all_issues - open_issue
 
     # release
-    releases = len(requests.get(f'{url}/releases', headers=headers).json())
+    releases = int(len(requests.get(f'{url}/releases', headers=headers).json()))
 
     # Forks
-    forks = len(requests.get(f'{url}/forks', headers=headers).json())
+    forks = int(len(requests.get(f'{url}/forks', headers=headers).json()))
 
     active = open_issue + close_issue * 2
 
@@ -102,7 +102,7 @@ def get_stats(repo, org='statgarten', headers=headers, per_page=30, max_pages=10
         data=[[repo, commits, contributors, star, active, open_issue, close_issue, pr, releases, forks]],
         columns=["Repo", 'Commits', 'Contributors', 'Stars', 'Active Score', 'Opened Issue', 'Closed Issue', 'Pull Requests', 'Releases', 'Forks']
     )
-
+    
 def get_contributors(owner, repo, headers):
     github_api_url = "https://api.github.com"
     endpoint = f"{github_api_url}/repos/{owner}/{repo}/contributors"
@@ -146,26 +146,26 @@ def buildMetrics(metrics, i):
 
 df = pd.concat([
     get_stats('board', org = 'statgarten'),
-    getStats('colorpen', org = 'statgarten'),
-    getStats('datatoys', org = 'statgarten'),
-    getStats('datatoys-python', org = 'statgarten'),
-    getStats('datatoys-raw', org = 'statgarten'),
-    getStats('dockerImage', org = 'statgarten'),
-    getStats('door', org = 'statgarten'),
+    get_stats('colorpen', org = 'statgarten'),
+    get_stats('datatoys', org = 'statgarten'),
+    get_stats('datatoys-python', org = 'statgarten'),
+    get_stats('datatoys-raw', org = 'statgarten'),
+    get_stats('dockerImage', org = 'statgarten'),
+    get_stats('door', org = 'statgarten'),
     # getStats('exRep', org = 'statgarten'),
-    getStats('maps', org = 'statgarten'),
-    getStats('playdoh', org = 'statgarten'),
-    getStats('publicdata101', org = 'statgarten'),
-    getStats('scissor', org = 'statgarten'),
-    getStats('SGDS', org = 'statgarten'),
-    getStats('sgthemes', org = 'statgarten'),
-    getStats('soroban', org = 'statgarten'),
-    getStats('statgarten', org = 'statgarten'),
-    getStats('stove', org = 'statgarten'),
-    getStats('jstable', org = 'jinseob2kim'),
-    getStats('jskm', org = 'jinseob2kim'),
-    getStats('jsmodule', org = 'jinseob2kim'),
-    getStats('shiny.likert', org = 'zarathucorp')      
+    get_stats('maps', org = 'statgarten'),
+    get_stats('playdoh', org = 'statgarten'),
+    get_stats('publicdata101', org = 'statgarten'),
+    get_stats('scissor', org = 'statgarten'),
+    get_stats('SGDS', org = 'statgarten'),
+    get_stats('sgthemes', org = 'statgarten'),
+    get_stats('soroban', org = 'statgarten'),
+    get_stats('statgarten', org = 'statgarten'),
+    get_stats('stove', org = 'statgarten'),
+    get_stats('jstable', org = 'jinseob2kim'),
+    get_stats('jskm', org = 'jinseob2kim'),
+    get_stats('jsmodule', org = 'jinseob2kim'),
+    get_stats('shiny.likert', org = 'zarathucorp')      
     # kindergarten
     # statgarten.github.io
     # dispatch_test
