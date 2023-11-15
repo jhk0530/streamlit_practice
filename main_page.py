@@ -66,9 +66,6 @@ def getStats(repo, org = 'statgarten', headers = headers):
     )
     return(df)
 
-import requests
-import pandas as pd
-
 def get_stats(repo, org='statgarten', headers=headers, per_page=30, max_pages=10):
     # define base url
     url = f'https://api.github.com/repos/{org}/{repo}'
@@ -109,11 +106,6 @@ def get_stats(repo, org='statgarten', headers=headers, per_page=30, max_pages=10
         columns=["Repo", 'Commits', 'Contributors', 'Stars', 'Watchers', 'Active Score', 'Opened Issue', 'Closed Issue', 'Pull Requests', 'Releases', 'Forks']
     )
 
-# 사용 예시
-repo_stats = get_stats("your_repo_name")
-print(repo_stats)
-
-    
 def get_contributors(owner, repo, headers):
     github_api_url = "https://api.github.com"
     endpoint = f"{github_api_url}/repos/{owner}/{repo}/contributors"
