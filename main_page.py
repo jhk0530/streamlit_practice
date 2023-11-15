@@ -127,9 +127,9 @@ def buildMetrics(metrics, i):
 
     with col1:
         st.metric(label = '🛠️ 커밋', value = int(metrics['Commits']), delta = int(metrics[0])-1000) # 커밋 1000
+        st.metric(label = '📢 릴리즈', value = int(metrics['Releases']))
 
-    with col2:
-        # st.metric(label = '🧑‍🤝‍🧑 기여자', value = int(metrics['Contributors']), delta = int(metrics[1])-30) # 기여자 30
+    with col2:        
         st.metric(label = '🧑‍🤝‍🧑 기여자', value = i, delta = i-30) # 기여자 30
 
     with col3:
@@ -140,9 +140,10 @@ def buildMetrics(metrics, i):
 
     with col5:
         st.metric(label = '❗ 오픈 이슈', value = int(metrics['Opened Issue']))
-
-    with col6:
         st.metric(label = '✅ 클로즈 이슈', value = int(metrics['Closed Issue']))
+    with col6:
+        st.metric(label = '➡️ 풀 리퀘스트', value = int(metrics['Pull Requests']))
+        st.metric(label = '🍴 포크', value = int(metrics['Forks']))    
 
 df = pd.concat([
     get_stats('board', org = 'statgarten'),
