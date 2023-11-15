@@ -6,32 +6,29 @@ import pandas as pd
 
 headers = {'Authorization': 'token ' + st.secrets['TOKEN']}
 
-@st.cache(ttl = 3600*2) # if updated before 1 hour, not update again
+@st.cache_data(ttl = 3600*2) # if updated before 1 hour, not update again
 def getStats(repo, org = 'statgarten', headers = headers):    
     # define base url
     url = 'https://api.github.com/repos/'+ org + '/' + repo
-    # star
+    
     s = requests.get(url, headers = headers).json()
+    
+    # star
     star = s['stargazers_count']
 
-    # commits
+    # watchers
+    watchers = s['subscribers_count']
 
+    # commits
     i = 1
     commits = 0
     while True:
-        s = requests.get(url + '/commits?per_page=30&page=' + str(i), headers = headers).json()
+        s = requests.get(url + '/commits?per_page=100&page=' + str(i), headers = headers).json() # change to 100. 30 costs api over
         commits += len(s)
         i += 1
         if len(s) == 0: break
-
-    # contributors
-    s = requests.get(url + '/contributors', headers = headers).json()
-    contributors = len(s)
-
-    # all issue
-    # s = requests.get(url + '/issues?state=all', headers = headers).json()
-    
-    # fix; 30 per page
+            
+    # issues
     i = 1
     allissue = 0
     while True:
@@ -45,10 +42,7 @@ def getStats(repo, org = 'statgarten', headers = headers):
     pr = len(s)
     allissue = allissue - pr
 
-    # open issue
-
-    # s = requests.get(url + '/issues?state=open', headers = headers).json()
-
+    # active score
     i = 1
     openissue = 0
     while True:
@@ -60,50 +54,16 @@ def getStats(repo, org = 'statgarten', headers = headers):
     closeissue = allissue - openissue
 
     active = openissue +  (closeissue) * 2
-    df = pd.DataFrame(
-        data = [[repo, commits, contributors, star, active, openissue, closeissue]], 
-        columns = ["Repo",'Commits', 'Contributors', 'Stars', 'Active Score', 'Opened Issue', 'Closed Issue']
-    )
-    return(df)
-
-def get_stats(repo, org='statgarten', headers=headers, per_page=30, max_pages=10):
-    # define base url
-    url = f'https://api.github.com/repos/{org}/{repo}'
-
-    # star
-    star = requests.get(url, headers=headers).json()['stargazers_count']
-
-    # watchers
-    watchers = requests.get(url, headers=headers).json()['subscribers_count']
-
-    # commits
-    commits = sum(len(requests.get(f'{url}/commits?per_page={per_page}&page={i}', headers=headers).json()) for i in range(1, max_pages + 1))
-
-    # contributors
-    contributors = len(requests.get(f'{url}/contributors', headers=headers).json())
-
-    # all issue
-    all_issues = sum(len(requests.get(f'{url}/issues?state=all&page={i}', headers=headers).json()) for i in range(1, max_pages + 1))
-
-    # pull requests
-    pr = int(len(requests.get(f'{url}/pulls?state=all', headers=headers).json()))
-
-    # open issue
-    open_issue = sum(len(requests.get(f'{url}/issues?state=open&page={i}', headers=headers).json()) for i in range(1, max_pages + 1))
-
-    close_issue = all_issues - open_issue
-
+            
     # release
     releases = int(len(requests.get(f'{url}/releases', headers=headers).json()))
 
     # Forks
     forks = int(len(requests.get(f'{url}/forks', headers=headers).json()))
 
-    active = open_issue + close_issue * 2
-
     return pd.DataFrame(
-        data=[[repo, commits, contributors, star, watchers, active, open_issue, close_issue, pr, releases, forks]],
-        columns=["Repo", 'Commits', 'Contributors', 'Stars', 'Watchers', 'Active Score', 'Opened Issue', 'Closed Issue', 'Pull Requests', 'Releases', 'Forks']
+        data=[[repo, commits, star, watchers, active, openissue, closeissue, pr, releases, forks]],
+        columns=["Repo", 'Commits', 'Stars', 'Watchers', 'Active Score', 'Opened Issue', 'Closed Issue', 'Pull Requests', 'Releases', 'Forks']
     )
 
 def get_contributors(owner, repo, headers):
@@ -150,27 +110,27 @@ def buildMetrics(metrics, i):
         st.metric(label = '🍴 포크', value = int(metrics['Forks']))    
 
 df = pd.concat([
-    get_stats('board', org = 'statgarten'),
-    get_stats('colorpen', org = 'statgarten'),
-    get_stats('datatoys', org = 'statgarten'),
-    get_stats('datatoys-python', org = 'statgarten'),
-    get_stats('datatoys-raw', org = 'statgarten'),
-    get_stats('dockerImage', org = 'statgarten'),
-    get_stats('door', org = 'statgarten'),
+    getStats('board', org = 'statgarten') ,
+    getStats('colorpen', org = 'statgarten'),
+    getStats('datatoys', org = 'statgarten'),
+    getStats('datatoys-python', org = 'statgarten'),
+    getStats('datatoys-raw', org = 'statgarten'),
+    getStats('dockerImage', org = 'statgarten'),
+    getStats('door', org = 'statgarten'),
     # getStats('exRep', org = 'statgarten'),
-    get_stats('maps', org = 'statgarten'),
-    get_stats('playdoh', org = 'statgarten'),
-    get_stats('publicdata101', org = 'statgarten'),
-    get_stats('scissor', org = 'statgarten'),
-    get_stats('SGDS', org = 'statgarten'),
-    get_stats('sgthemes', org = 'statgarten'),
-    get_stats('soroban', org = 'statgarten'),
-    get_stats('statgarten', org = 'statgarten'),
-    get_stats('stove', org = 'statgarten'),
-    get_stats('jstable', org = 'jinseob2kim'),
-    get_stats('jskm', org = 'jinseob2kim'),
-    get_stats('jsmodule', org = 'jinseob2kim'),
-    get_stats('shiny.likert', org = 'zarathucorp')      
+    getStats('maps', org = 'statgarten'),
+    getStats('playdoh', org = 'statgarten'),
+    getStats('publicdata101', org = 'statgarten'),
+    getStats('scissor', org = 'statgarten'),
+    getStats('SGDS', org = 'statgarten'),
+    getStats('sgthemes', org = 'statgarten'),
+    getStats('soroban', org = 'statgarten'),
+    getStats('statgarten', org = 'statgarten'),
+    getStats('stove', org = 'statgarten'),
+    getStats('jstable', org = 'jinseob2kim'),
+    getStats('jskm', org = 'jinseob2kim'),
+    getStats('jsmodule', org = 'jinseob2kim'),
+    getStats('shiny.likert', org = 'zarathucorp')      
     # kindergarten
     # statgarten.github.io
     # dispatch_test
@@ -204,6 +164,7 @@ v = find_contributors(v, 'jinseob2kim', 'jstable', headers = headers)
 v = find_contributors(v, 'jinseob2kim', 'jskm', headers = headers)
 v = find_contributors(v, 'jinseob2kim', 'jsmodule', headers = headers)
 v = find_contributors(v, 'zarathucorp', 'shiny.likert', headers = headers)
+### 
 
 # unique
 v = list(set(v))
