@@ -134,6 +134,7 @@ df = pd.concat([
     getStats('jstable', org = 'jinseob2kim'),
     getStats('jskm', org = 'jinseob2kim'),
     getStats('jsmodule', org = 'jinseob2kim'),
+    getStats('docker-rshiny', org = 'jinseob2kim'),
     getStats('shiny.likert', org = 'zarathucorp')      
     # kindergarten
     # statgarten.github.io
@@ -167,6 +168,7 @@ v = find_contributors(v, 'statgarten', 'stove', headers = headers)
 v = find_contributors(v, 'jinseob2kim', 'jstable', headers = headers)
 v = find_contributors(v, 'jinseob2kim', 'jskm', headers = headers)
 v = find_contributors(v, 'jinseob2kim', 'jsmodule', headers = headers)
+v = find_contributors(v, 'jinseob2kim', 'docker-rshiny', headers = headers)
 v = find_contributors(v, 'zarathucorp', 'shiny.likert', headers = headers)
 ### 
 
