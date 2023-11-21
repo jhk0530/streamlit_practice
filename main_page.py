@@ -176,6 +176,8 @@ v = find_contributors(v, 'zarathucorp', 'shiny.likert', headers = headers)
 v = list(set(v))
 v = [item for item in v if item != 'github-actions[bot]']
 
+print(v)
+
 buildMetrics(Metrics, i = len(v))
 
 st.markdown("### Metrics for each repo")
