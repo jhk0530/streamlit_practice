@@ -75,7 +75,7 @@ def getStats(repo, org = 'statgarten', headers = headers):
     forks = int(len(requests.get(f'{url}/forks', headers=headers).json()))
 
     return pd.DataFrame(
-        data=[[repo, commits, contributors, star, watchers, active, openissue, closeissue, pr, releases, forks]],
+        data=[[repo, commits, contributors, star, watchers, active, openissue, closeissue, allprs, releases, forks]],
         columns=["Repo", 'Commits', 'Contributors', 'Stars', 'Watchers', 'Active Score', 'Opened Issue', 'Closed Issue', 'Pull Requests', 'Releases', 'Forks']
     )
 
