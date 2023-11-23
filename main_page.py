@@ -50,16 +50,14 @@ def getStats(repo, org = 'statgarten', headers = headers):
         i += 1
         if len(s) == 0: break
 
-    ## pull requests - closed
-    #i = 1
-    #closeprs = 0
-    #while True:
-    #    s = requests.get(url + '/pulls?state=closed&per_page=100&page=', + str(i), headers = headers).json()
-    #    closeprs += len(s)
-    #    i +=1
-    #    if len(s) == 0: break
-
-    #openprs = allprs - closeprs
+    ## pull requests - open
+    i = 1
+    openprs = 0
+    while True:
+        s = requests.get(url + '/pulls?state=open&per_page=100&page=', + str(i), headers = headers).json()
+        openprs += len(s)
+        i +=1
+        if len(s) == 0: break
     
     allissue = allissue - allprs
 
@@ -71,6 +69,7 @@ def getStats(repo, org = 'statgarten', headers = headers):
         openissue += len(s)
         i += 1
         if len(s) == 0: break    
+    openissue = openissue - openprs
     
     closeissue = allissue - openissue
 
