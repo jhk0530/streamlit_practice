@@ -54,7 +54,7 @@ def getStats(repo, org = 'statgarten', headers = headers):
     i = 1
     openprs = 0
     while True:
-        s = requests.get(url + '/pulls?state=open&per_page=100&page=', + str(i), headers = headers).json()
+        s = requests.get(url + '/pulls?state=open&per_page=100&page=' + str(i), headers = headers).json()
         openprs += len(s)
         i +=1
         if len(s) == 0: break
