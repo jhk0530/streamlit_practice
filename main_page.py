@@ -36,15 +36,24 @@ def getStats(repo, org = 'statgarten', headers = headers):
     i = 1
     allissue = 0
     while True:
-        s = requests.get(url + '/issues?state=all&page=' + str(i), headers = headers).json()
+        s = requests.get(url + '/issues?state=all&per_page=100&page=' + str(i), headers = headers).json()
         allissue += len(s)
         i += 1
         if len(s) == 0: break
 
-    # pull requests
-    s = requests.get(url + '/pulls?state=closed', headers = headers).json()
-    pr = len(s)
-    allissue = allissue - pr
+    ## pull requests - closed
+    #s = requests.get(url + '/pulls?state=closed', headers = headers).json()
+    #pr = len(s)
+
+    # pull requests - all
+    allprs = 0
+    while True:
+        s = requests.get(url + '/pulls?state=all&per_page=100&page=', + str(i), headers = headers).json()
+        allprs += len(s)
+        i += 1
+        if len(s) == 0: break
+
+    allissue = allissue - allprs
 
     # active score
     i = 1
@@ -114,28 +123,28 @@ def buildMetrics(metrics, i):
         st.metric(label = '🍴 포크', value = int(metrics['Forks']))    
 
 df = pd.concat([
-    getStats('board', org = 'statgarten'),
-    getStats('colorpen', org = 'statgarten'),
-    getStats('datatoys', org = 'statgarten'),
-    getStats('datatoys-python', org = 'statgarten'),
-    getStats('datatoys-raw', org = 'statgarten'),
-    getStats('dockerImage', org = 'statgarten'),
-    getStats('door', org = 'statgarten'),
+    #getStats('board', org = 'statgarten'),
+    #getStats('colorpen', org = 'statgarten'),
+    #getStats('datatoys', org = 'statgarten'),
+    #getStats('datatoys-python', org = 'statgarten'),
+    #getStats('datatoys-raw', org = 'statgarten'),
+    #getStats('dockerImage', org = 'statgarten'),
+    #getStats('door', org = 'statgarten'),
     # getStats('exRep', org = 'statgarten'),
-    getStats('maps', org = 'statgarten'),
+    #getStats('maps', org = 'statgarten'),
     getStats('playdoh', org = 'statgarten'),
-    getStats('publicdata101', org = 'statgarten'),
-    getStats('scissor', org = 'statgarten'),
-    getStats('SGDS', org = 'statgarten'),
-    getStats('sgthemes', org = 'statgarten'),
-    getStats('soroban', org = 'statgarten'),
-    getStats('statgarten', org = 'statgarten'),
+    #getStats('publicdata101', org = 'statgarten'),
+    #getStats('scissor', org = 'statgarten'),
+    #getStats('SGDS', org = 'statgarten'),
+    #getStats('sgthemes', org = 'statgarten'),
+    #getStats('soroban', org = 'statgarten'),
+    #getStats('statgarten', org = 'statgarten'),
     getStats('stove', org = 'statgarten'),
-    getStats('jstable', org = 'jinseob2kim'),
-    getStats('jskm', org = 'jinseob2kim'),
-    getStats('jsmodule', org = 'jinseob2kim'),
-    getStats('docker-rshiny', org = 'jinseob2kim'),
-    getStats('shiny.likert', org = 'zarathucorp')      
+    #getStats('jstable', org = 'jinseob2kim'),
+    #getStats('jskm', org = 'jinseob2kim'),
+    #getStats('jsmodule', org = 'jinseob2kim'),
+    #getStats('docker-rshiny', org = 'jinseob2kim'),
+    #getStats('shiny.likert', org = 'zarathucorp')      
     # kindergarten
     # statgarten.github.io
     # dispatch_test
@@ -149,27 +158,27 @@ st.markdown("### Statgarten: Total Metrics")
 
 # contributors 
 v = []
-v = find_contributors(v, 'statgarten', 'board', headers = headers)
-v = find_contributors(v, 'statgarten', 'colorpen', headers = headers)
-v = find_contributors(v, 'statgarten', 'datatoys', headers = headers)
-v = find_contributors(v, 'statgarten', 'datatoys-python', headers = headers)
-v = find_contributors(v, 'statgarten', 'datatoys-raw', headers = headers)
-v = find_contributors(v, 'statgarten', 'dockerImage', headers = headers)
-v = find_contributors(v, 'statgarten', 'door', headers = headers)
-v = find_contributors(v, 'statgarten', 'maps', headers = headers)
+#v = find_contributors(v, 'statgarten', 'board', headers = headers)
+#v = find_contributors(v, 'statgarten', 'colorpen', headers = headers)
+#v = find_contributors(v, 'statgarten', 'datatoys', headers = headers)
+#v = find_contributors(v, 'statgarten', 'datatoys-python', headers = headers)
+#v = find_contributors(v, 'statgarten', 'datatoys-raw', headers = headers)
+#v = find_contributors(v, 'statgarten', 'dockerImage', headers = headers)
+#v = find_contributors(v, 'statgarten', 'door', headers = headers)
+#v = find_contributors(v, 'statgarten', 'maps', headers = headers)
 v = find_contributors(v, 'statgarten', 'playdoh', headers = headers)
-v = find_contributors(v, 'statgarten', 'publicdata101', headers = headers)
-v = find_contributors(v, 'statgarten', 'scissor', headers = headers)
-v = find_contributors(v, 'statgarten', 'SGDS', headers = headers)
-v = find_contributors(v, 'statgarten', 'sgthemes', headers = headers)
-v = find_contributors(v, 'statgarten', 'soroban', headers = headers)
-v = find_contributors(v, 'statgarten', 'statgarten', headers = headers)
+#v = find_contributors(v, 'statgarten', 'publicdata101', headers = headers)
+#v = find_contributors(v, 'statgarten', 'scissor', headers = headers)
+#v = find_contributors(v, 'statgarten', 'SGDS', headers = headers)
+#v = find_contributors(v, 'statgarten', 'sgthemes', headers = headers)
+#v = find_contributors(v, 'statgarten', 'soroban', headers = headers)
+#v = find_contributors(v, 'statgarten', 'statgarten', headers = headers)
 v = find_contributors(v, 'statgarten', 'stove', headers = headers)
-v = find_contributors(v, 'jinseob2kim', 'jstable', headers = headers)
-v = find_contributors(v, 'jinseob2kim', 'jskm', headers = headers)
-v = find_contributors(v, 'jinseob2kim', 'jsmodule', headers = headers)
-v = find_contributors(v, 'jinseob2kim', 'docker-rshiny', headers = headers)
-v = find_contributors(v, 'zarathucorp', 'shiny.likert', headers = headers)
+#v = find_contributors(v, 'jinseob2kim', 'jstable', headers = headers)
+#v = find_contributors(v, 'jinseob2kim', 'jskm', headers = headers)
+#v = find_contributors(v, 'jinseob2kim', 'jsmodule', headers = headers)
+#v = find_contributors(v, 'jinseob2kim', 'docker-rshiny', headers = headers)
+# v = find_contributors(v, 'zarathucorp', 'shiny.likert', headers = headers)
 ### 
 
 # unique
