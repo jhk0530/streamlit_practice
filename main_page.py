@@ -41,18 +41,26 @@ def getStats(repo, org = 'statgarten', headers = headers):
         i += 1
         if len(s) == 0: break
 
-    ## pull requests - closed
-    #s = requests.get(url + '/pulls?state=closed', headers = headers).json()
-    #pr = len(s)
-
     # pull requests - all
-    allprs = 0
+    i = 1
+    allprs = 0    
     while True:
         s = requests.get(url + '/pulls?state=all&per_page=100&page=' + str(i), headers = headers).json()
         allprs += len(s)
         i += 1
         if len(s) == 0: break
 
+    ## pull requests - closed
+    #i = 1
+    #closeprs = 0
+    #while True:
+    #    s = requests.get(url + '/pulls?state=closed&per_page=100&page=', + str(i), headers = headers).json()
+    #    closeprs += len(s)
+    #    i +=1
+    #    if len(s) == 0: break
+
+    #openprs = allprs - closeprs
+    
     allissue = allissue - allprs
 
     # active score
@@ -66,7 +74,7 @@ def getStats(repo, org = 'statgarten', headers = headers):
     
     closeissue = allissue - openissue
 
-    active = openissue +  (closeissue) * 2
+    active = openissue + (closeissue) * 2
             
     # release
     releases = int(len(requests.get(f'{url}/releases', headers=headers).json()))
